@@ -27,7 +27,76 @@ namespace Galihanova_Autoservice
             //Загрузить список из бд
             var currentServices = ГалихановаАвтосервисEntities.GetContext().Service.ToList(); //Связать с нашим листвью
             ServiceListView.ItemsSource = currentServices; //добавили строки
+
+            ComboType.SelectedIndex = 0;
+
+            UpdateServicies();
         }
+
+        private void TBoxSearch_TextChanged (object sender, TextChangedEventArgs e)
+        {
+            UpdateServicies();
+        }
+
+        private void ComboType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateServicies();
+        }
+
+        private void RButtonUp_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateServicies();
+        }
+
+        private void RButtonDown_Cheked(object sender, RoutedEventArgs e)
+        {
+            UpdateServicies();
+        }
+        private void UpdateServicies ()
+        {
+            var currentServicies = ГалихановаАвтосервисEntities.GetContext().Service.ToList();
+
+            if (ComboType.SelectedIndex == 0)
+            {
+                currentServicies = currentServicies.Where(p=> (Convert.ToInt32(p.Discount) >= 0 && Convert.ToInt32(p.Discount) <= 100)).ToList();
+            }
+            if (ComboType.SelectedIndex == 1)
+            {
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 0 && Convert.ToInt32(p.Discount) < 5)).ToList();
+            }
+            if (ComboType.SelectedIndex == 2)
+            {
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 5 && Convert.ToInt32(p.Discount) < 15)).ToList();
+            }
+            if (ComboType.SelectedIndex == 3)
+            {
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 15 && Convert.ToInt32(p.Discount) < 30)).ToList();
+            }
+            if (ComboType.SelectedIndex == 4)
+            {
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 30 && Convert.ToInt32(p.Discount) < 70)).ToList();
+            }
+            if (ComboType.SelectedIndex == 5)
+            {
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 70 && Convert.ToInt32(p.Discount) <= 100)).ToList();
+            }
+
+            //Реализуем поиск данный в листвью
+            currentServicies = currentServicies.Where(p => p.Title.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
+
+            //Отображение итогов фильтра и поиска
+            ServiceListView.ItemsSource = currentServicies.ToList();
+
+            if (RbuttonDown.IsChecked.Value)
+            {
+                ServiceListView.ItemsSource = currentServicies.OrderByDescending(p => p.Cost).ToList();
+            }
+            if (RButtonUp.IsChecked.Value)
+            {
+                ServiceListView.ItemsSource= currentServicies.OrderBy(p => p.Cost).ToList();
+            }
+        }
+
         //private void Button_Click(object sender, RoutedEventArgs e)
         //{
         //    Manager.MainFrame.Navigate(new AddEditPage());

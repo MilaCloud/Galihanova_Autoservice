@@ -18,6 +18,8 @@ namespace Galihanova_Autoservice
     /// <summary>
     /// Логика взаимодействия для ServicePage.xaml
     /// </summary>
+
+   
     public partial class ServicePage : Page
     {
         public ServicePage()
@@ -52,6 +54,13 @@ namespace Galihanova_Autoservice
         {
             UpdateServicies();
         }
+
+        int CountRecords; //Кол-во записей в таблице
+        int CountPage;//Общее кол-во страниц
+        int CurrentPage = 0;
+
+        List<Service> CurrentPageList = new List<Service>(); //текущий лист, который заносится в таблицу;
+        List<Service> TableList; //лист, содержащий все записи, все сортировки/фильтры/поиски применяются к данной переменной
         private void UpdateServicies ()
         {
             var currentServicies = ГалихановаАвтосервисEntities.GetContext().Service.ToList();
@@ -89,12 +98,158 @@ namespace Galihanova_Autoservice
 
             if (RbuttonDown.IsChecked.Value)
             {
-                ServiceListView.ItemsSource = currentServicies.OrderByDescending(p => p.Cost).ToList();
+                currentServicies = currentServicies.OrderByDescending(p => p.Cost).ToList();
             }
             if (RButtonUp.IsChecked.Value)
             {
-                ServiceListView.ItemsSource= currentServicies.OrderBy(p => p.Cost).ToList();
+                currentServicies = currentServicies.OrderBy(p => p.Cost).ToList();
             }
+            ServiceListView.ItemsSource = currentServicies;
+            TableList = currentServicies;
+            ChangePage(0, 0);
+        }
+
+        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            //забираем сервис с нажатой кнопкой удалить
+            var currentService = (sender as Button).DataContext as Service;
+
+            //Проверка на наличие записей клиентов на услугу
+            var currentClientServices = ГалихановаАвтосервисEntities.GetContext().ClientService.ToList();
+            currentClientServices = currentClientServices.Where(p => p.ServiceID == currentService.ID).ToList();
+
+            if (currentClientServices.Count != 0)
+            {
+                MessageBox.Show("Невозможно удалить, так как существуют записи на эту услугу");
+            }
+            else
+            {
+
+                if (MessageBox.Show("Вы точно хотите удалить услугу?", "Внимание!", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        ГалихановаАвтосервисEntities.GetContext().Service.Remove(currentService);
+                        ГалихановаАвтосервисEntities.GetContext().SaveChanges();
+                        //Выводим измененную таблицу в листвью
+                        ServiceListView.ItemsSource = ГалихановаАвтосервисEntities.GetContext().Service.ToList();
+                        //Применяем фильтры и поиск если они были
+                        UpdateServicies();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, ToString());
+                    }
+                }
+            }
+        }
+
+        private void ChangePage (int direction, int? selectedPage)
+        {
+            //Параметр int direction (направление перелистывания), возможны 3 значения:
+            //            0 - начальная загрузка, 
+            //1 - предыдущая страница, 
+            //2 - следующая страница, 
+
+            CurrentPageList.Clear();
+            CountRecords = TableList.Count; //опред колво записй во всем списке
+
+            //колво страниц
+            if (CountRecords % 10 > 0)
+            {
+                CountPage = CountRecords / 10 + 1;
+            }
+            else
+            {
+                CountPage = CountRecords / 10;
+            }
+
+            Boolean Ifupdate = true; //Правильность
+
+            int min;
+
+            if (selectedPage.HasValue) //Если не null
+            {
+                if (selectedPage >= 0 && selectedPage <= CountPage)
+                {
+                    CurrentPage = (int)selectedPage;
+                    min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                    for (int i = CurrentPage * 10; i < min; i++)
+                    {
+                        CurrentPageList.Add(TableList[i]);
+                    }
+                }
+            }
+            else //нажата стрелка
+            {
+                switch (direction)
+                {
+                    case 1: //предыдущая стр
+                        if (CurrentPage > 0)
+                        {
+                            CurrentPage--;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                            Ifupdate = false;
+                        }
+                        break;
+                    case 2: //следующая стр
+                        if (CurrentPage < CountPage - 1) //Если вперед можно
+                        {
+                            CurrentPage++;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage *10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                            Ifupdate = false;
+                        }
+                        break;
+                }
+            }
+
+            if (Ifupdate) //если currentPage не вышел из диапазона
+            {
+                PageListBox.Items.Clear();
+                for (int i = 1; i <= CountPage; i++)
+                {
+                    PageListBox.Items.Add(i);
+                }
+                PageListBox.SelectedIndex = CurrentPage;
+
+                min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                TBCount.Text = min.ToString();
+                TBALLRecords.Text = " из " + CountRecords.ToString();
+
+                ServiceListView.ItemsSource = CurrentPageList;
+                //обновить отображение списка услуг
+                ServiceListView.Items.Refresh();
+            }    
+        }
+
+
+        private void LeftDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(1, null);
+            
+        }
+
+        private void RightDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(2, null);
+        }
+        private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
         }
 
         //private void Button_Click(object sender, RoutedEventArgs e)

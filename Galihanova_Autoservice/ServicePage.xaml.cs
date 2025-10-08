@@ -58,27 +58,27 @@ namespace Galihanova_Autoservice
 
             if (ComboType.SelectedIndex == 0)
             {
-                currentServicies = currentServicies.Where(p=> (Convert.ToInt32(p.Discount) >= 0 && Convert.ToInt32(p.Discount) <= 100)).ToList();
+                currentServicies = currentServicies.Where(p=> (Convert.ToInt32(p.DiscountInt) >= 0 && Convert.ToInt32(p.DiscountInt) <= 100)).ToList();
             }
             if (ComboType.SelectedIndex == 1)
             {
-                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 0 && Convert.ToInt32(p.Discount) < 5)).ToList();
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.DiscountInt) >= 0 && Convert.ToInt32(p.DiscountInt) < 5)).ToList();
             }
             if (ComboType.SelectedIndex == 2)
             {
-                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 5 && Convert.ToInt32(p.Discount) < 15)).ToList();
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.DiscountInt) >= 5 && Convert.ToInt32(p.DiscountInt) < 15)).ToList();
             }
             if (ComboType.SelectedIndex == 3)
             {
-                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 15 && Convert.ToInt32(p.Discount) < 30)).ToList();
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.DiscountInt) >= 15 && Convert.ToInt32(p.DiscountInt) < 30)).ToList();
             }
             if (ComboType.SelectedIndex == 4)
             {
-                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 30 && Convert.ToInt32(p.Discount) < 70)).ToList();
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.DiscountInt) >= 30 && Convert.ToInt32(p.DiscountInt) < 70)).ToList();
             }
             if (ComboType.SelectedIndex == 5)
             {
-                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.Discount) >= 70 && Convert.ToInt32(p.Discount) <= 100)).ToList();
+                currentServicies = currentServicies.Where(p => (Convert.ToInt32(p.DiscountInt) >= 70 && Convert.ToInt32(p.DiscountInt) <= 100)).ToList();
             }
 
             //Реализуем поиск данный в листвью

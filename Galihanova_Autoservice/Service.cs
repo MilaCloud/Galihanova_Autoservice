@@ -27,6 +27,10 @@ namespace Galihanova_Autoservice
         public string DurationInSeconds { get; set; }
         public string Description { get; set; }
         public double Discount { get; set; }
+
+        public int DiscountInt { get 
+            { return (int)(Discount * 100); }
+        }
         public string MainImagePath { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

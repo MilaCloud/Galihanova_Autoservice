@@ -28,8 +28,16 @@ namespace Galihanova_Autoservice
         public string Description { get; set; }
         public double Discount { get; set; }
 
-        public int DiscountInt { get 
-            { return (int)(Discount * 100); }
+        public int DiscountInt 
+        { 
+            get 
+            { 
+                return (int)(Discount * 100); 
+            }
+            set
+            {
+                Discount = value/100.00;
+            }
         }
         public string MainImagePath { get; set; }
     

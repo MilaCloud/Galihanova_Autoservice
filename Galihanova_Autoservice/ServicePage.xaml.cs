@@ -252,6 +252,27 @@ namespace Galihanova_Autoservice
             ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
         }
 
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Service));
+        }
+
+        private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                ГалихановаАвтосервисEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
+                ServiceListView.ItemsSource = ГалихановаАвтосервисEntities.GetContext().Service.ToList();
+                UpdateServicies();
+            }
+           
+        }
+
         //private void Button_Click(object sender, RoutedEventArgs e)
         //{
         //    Manager.MainFrame.Navigate(new AddEditPage());

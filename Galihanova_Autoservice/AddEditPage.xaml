@@ -9,6 +9,29 @@
       Title="AddEditPage" FontFamily="Tw Cen MT">
 
     <Grid>
-        <TextBlock Text="Привет!" FontSize="30" VerticalAlignment="Center" HorizontalAlignment="Center"> </TextBlock>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Название" FontSize="15" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock Text="Стоимость" FontSize="15" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock Text="Длительность" FontSize="15" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+        <TextBlock Text="Скидка" FontSize="15" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+
+        <TextBox Text ="{Binding Title}" Grid.Row="0" Grid.Column="1" Height="30" Width="200" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+        <TextBox Text ="{Binding Cost}" Grid.Row="1" Grid.Column="1" Height="30" Width="200" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+        <TextBox Text ="{Binding DurationInSeconds}" Grid.Row="2" Grid.Column="1" Height="30" Width="200" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding DiscountInt}"  Grid.Row="3" Grid.Column="1" Height="30" Width="200" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBox>
+
+        <Button Name="SaveButton" Content="Сохранить" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Click="SaveButton_Click"></Button>
     </Grid>
 </Page>

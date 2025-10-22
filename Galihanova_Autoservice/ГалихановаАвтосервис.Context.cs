@@ -15,16 +15,6 @@ namespace Galihanova_Autoservice
     
     public partial class ГалихановаАвтосервисEntities : DbContext
     {
-        private static ГалихановаАвтосервисEntities _context;
-
-        public static ГалихановаАвтосервисEntities GetContext()
-        {
-            if ( _context == null )
-            {
-                _context = new ГалихановаАвтосервисEntities();
-            }
-            return _context;
-        }
         public ГалихановаАвтосервисEntities()
             : base("name=ГалихановаАвтосервисEntities")
         {
@@ -34,7 +24,16 @@ namespace Galihanova_Autoservice
         {
             throw new UnintentionalCodeFirstException();
         }
-    
+
+        public static ГалихановаАвтосервисEntities _context;
+
+        public static ГалихановаАвтосервисEntities GetContext()
+        {
+            if (_context == null)
+                _context = new ГалихановаАвтосервисEntities();
+            return _context;
+        }
+
         public virtual DbSet<Client> Client { get; set; }
         public virtual DbSet<ClientService> ClientService { get; set; }
         public virtual DbSet<DocumentByService> DocumentByService { get; set; }

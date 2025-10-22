@@ -11,6 +11,8 @@ namespace Galihanova_Autoservice
 {
     using System;
     using System.Collections.Generic;
+    using System.Windows;
+    using System.Windows.Media;
     
     public partial class Service
     {
@@ -24,19 +26,19 @@ namespace Galihanova_Autoservice
         public int ID { get; set; }
         public string Title { get; set; }
         public decimal Cost { get; set; }
-        public string DurationInSeconds { get; set; }
+        public int DurationInSeconds { get; set; }
         public string Description { get; set; }
         public double Discount { get; set; }
 
-        public int DiscountInt 
-        { 
-            get 
-            { 
-                return (int)(Discount * 100); 
+        public int DiscountInt
+        {
+            get
+            {
+                return (int)(Discount * 100);
             }
             set
             {
-                Discount = value/100.00;
+                Discount = value / 100.00;
             }
         }
         public string MainImagePath { get; set; }
@@ -45,5 +47,47 @@ namespace Galihanova_Autoservice
         public virtual ICollection<ClientService> ClientService { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ServicePhoto> ServicePhoto { get; set; }
+
+        public string OldCost
+        {
+            get
+            {
+                if (Discount > 0)
+                {
+                    return Cost.ToString();
+                }
+                else return "";
+            }
+        }
+
+        public decimal NewCost
+        {
+            get
+            {
+                if (Discount > 0)
+                {
+                    return Cost * (1 - (decimal)Discount);
+                }
+                else
+                {
+                    return Cost;
+                }
+            }
+        }
+
+        public SolidColorBrush FonStyle
+        {
+            get
+            {
+                if (Discount > 0)
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("LightGreen");
+                }
+                else
+                {
+                    return (SolidColorBrush)new BrushConverter().ConvertFromString("White");
+                }
+            }
+        }
     }
 }

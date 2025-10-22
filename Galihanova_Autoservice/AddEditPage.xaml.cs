@@ -21,6 +21,7 @@ namespace Galihanova_Autoservice
     public partial class AddEditPage : Page
     {
         private Service _currentService = new Service();
+        private bool _isEditing = false;
         public AddEditPage(Service SelectedService)
         {
             InitializeComponent();
@@ -28,6 +29,11 @@ namespace Galihanova_Autoservice
             if (SelectedService != null)
             {
                 _currentService = SelectedService;
+                _isEditing = true;
+            }
+            else
+            {
+                _isEditing = false;
             }
 
             DataContext = _currentService;
@@ -52,9 +58,19 @@ namespace Galihanova_Autoservice
                 errors.AppendLine("Укажите скидку");
             }
 
-            if (string.IsNullOrWhiteSpace(_currentService.DurationInSeconds))
+            if (_currentService.DurationInSeconds == 0)
             {
                 errors.AppendLine("Укажите длительность услуги");
+            }
+
+            if (_currentService.DurationInSeconds > 240)
+            {
+                errors.AppendLine("Длительность услуги не может быть более 240 минут");
+            }    
+
+            if (_currentService.DurationInSeconds < 0)
+            {
+                errors.AppendLine("Длительность услуги не может быть менее 0 минут");
             }
 
             if(errors.Length>0)
@@ -63,19 +79,27 @@ namespace Galihanova_Autoservice
                 return;
             }
 
-            if(_currentService.ID == 0)
+            var allServices = ГалихановаАвтосервисEntities.GetContext().Service.ToList();
+            allServices = allServices.Where(p=> p.Title == _currentService.Title).ToList();
+
+            if (allServices.Count == 0 || _isEditing == true)
             {
-                ГалихановаАвтосервисEntities.GetContext().Service.Add(_currentService);
+                if(_currentService.ID == 0)
+                    ГалихановаАвтосервисEntities.GetContext().Service.Add(_currentService);
+                try
+                {
+                    ГалихановаАвтосервисEntities.GetContext().SaveChanges();
+                    MessageBox.Show("Информация сохранена");
+                    Manager.MainFrame.GoBack();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message.ToString());
+                }
             }
-            try
+            else
             {
-                ГалихановаАвтосервисEntities.GetContext().SaveChanges();
-                MessageBox.Show("Информация сохранена");
-                Manager.MainFrame.GoBack();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
+                MessageBox.Show("Уже существует такая услуга");
             }
         }
     }

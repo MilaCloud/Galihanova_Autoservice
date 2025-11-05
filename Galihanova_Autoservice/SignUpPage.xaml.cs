@@ -48,7 +48,10 @@ namespace Galihanova_Autoservice
             if (TBStart.Text == "")
                 errors.AppendLine("Укажите время начала услуги");
 
-            if(errors.Length > 0)
+            if (TBEnd.Text == "")
+                errors.AppendLine("Укажите время начала услуги в формате ЧЧ:ММ");
+
+            if (errors.Length > 0)
             {
                 MessageBox.Show(errors.ToString());
                 return;
@@ -90,7 +93,7 @@ namespace Galihanova_Autoservice
                     int startHour = Convert.ToInt32(start[0].ToString());
                     int startMinute = Convert.ToInt32(start[1].ToString());
 
-                    if (startHour < 0 || startHour >= 23 || startMinute <0 || startMinute >=60)
+                    if (startHour < 0 || startHour > 23 || startMinute <0 || startMinute >=60)
                     {
                         TBEnd.Text = "";
                         return;
@@ -113,7 +116,6 @@ namespace Galihanova_Autoservice
             }
         }
 
-        //moe
         private void TBStart_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -137,7 +139,6 @@ namespace Galihanova_Autoservice
                 }
             }
 
-            // Проверяем максимальную длину (5 символов: "HH:MM")
             if (newText.Length > 5)
             {
                 e.Handled = true;

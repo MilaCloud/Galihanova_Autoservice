@@ -11,6 +11,7 @@ namespace Galihanova_Autoservice
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
     
@@ -54,7 +55,7 @@ namespace Galihanova_Autoservice
             {
                 if (Discount > 0)
                 {
-                    return Cost.ToString();
+                    return Cost.ToString(CultureInfo.InvariantCulture);
                 }
                 else return "";
             }
@@ -66,11 +67,11 @@ namespace Galihanova_Autoservice
             {
                 if (Discount > 0)
                 {
-                    return Cost * (1 - (decimal)Discount);
+                    return Math.Round(Cost * (1 - (decimal)Discount),2);
                 }
                 else
                 {
-                    return Cost;
+                    return Math.Round(Cost,2);
                 }
             }
         }
